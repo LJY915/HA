@@ -1,0 +1,128 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-05-18 14:08:39
+ * @LastEditTime: 2021-05-18 16:52:23
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \项目\vscode\01-HTML\javascript 基础\HTML\基础练习\四月\Vue\axios\生命周期\demo.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        
+        [v-cloak] {
+            display: none;
+        }
+        
+        .load {
+            font-size: 20px;
+            margin-left: 10px;
+            font-weight: 400;
+        }
+        
+        .list ul {
+            margin: 0px 40px;
+            list-style: none;
+        }
+        
+        .list ul li {
+            width: 100%;
+            border-bottom: 1px solid #ccc;
+        }
+        
+        .list ul li img {
+            width: 40px;
+            height: 40px;
+            vertical-align: middle;
+        }
+        
+        .list ul li span {
+            vertical-align: middle;
+        }
+        
+        .list ul li span:nth-of-type(4) {
+            float: right;
+            margin-top: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="postlist">
+            <div class="load" v-if='loading'>
+                Loading...
+            </div>
+            <div class="list" v-else>
+                <ul>
+                    <li v-for='item in datas'>
+                        <img :src="item.author.avatar_url">
+                        <span>{{item.reply_count}}/</span>
+                        <span>{{item.visit_count}}</span>
+                        <span>{{item.title}}</span>
+                        <span>{{item.create_at|format}}</span>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div>
+</body>
+<script src="../../vue.js"></script>
+<script src="../lib/axios.min.js"></script>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            datas: {},
+            loading: true,
+        },
+        methods: {
+            getData: function() {
+                axios.get('https://cnodejs.org/api/v1/topics', {
+                    params: {
+                        page: 1,
+                        limit: 50
+                    }
+                }).then(res => {
+                    if (true) {
+                        this.datas = res.data.data;
+                        this.loading = false
+                    }
+                }).catch(req => {
+                    console.log(req)
+                })
+            }
+        },
+        filters: {
+            format: function(v) {
+                var v = new Date(v)
+                var p = ''
+                let y = v.getFullYear();
+                let month = (v.getMonth() + 1) < 10 ? '0' + (v.getMonth() + 1) : (v.getMonth() + 1)
+                let date = (v.getDate()) < 10 ? '0' + (v.getDate()) : (v.getDate())
+                let h = v.getHours() < 10 ? '0' + v.getHours() : v.getHours()
+                let m = v.getMinutes() < 10 ? '0' + v.getMinutes() : v.getMinutes(); //取当前分钟
+                let s = v.getSeconds() < 10 ? '0' + v.getSeconds() : v.getSeconds(); //取当前秒
+                p = `${y}-${month}-${date}/${h}:${m}:${s}`
+                return p
+            }
+        },
+        beforeMount: function() {
+            this.loading = true;
+            this.getData()
+        }
+    })
+</script>
+
+</html>

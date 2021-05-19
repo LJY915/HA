@@ -1,0 +1,124 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-05-17 14:23:09
+ * @LastEditTime: 2021-05-17 21:08:30
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \项目\vscode\01-HTML\javascript 基础\HTML\基础练习\四月\Vue\axios\1.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <button @click='get_axios'>get请求方式</button>
+        <button @click='post_axios'>post请求方式</button>
+    </div>
+    <script src="../vue.js"></script>
+    <script src="lib/axios.min.js"></script>
+    <script src="lib/qs.min.js"></script>
+    <script>
+        axios.defaults.headers = {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+            //使用baseurl全局  可以不用写接口
+        axios.defaults.baseURL = 'http://127.0.0.1:4000';
+
+        //通过axios的create创建自己的axios 以下配置不用使用别人的axios使用命名的axios 
+        const myaxios = axios.create({
+                baseURL: 'http://127.0.0.1:3001',
+                timeout: 1000,
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
+            })
+            //添加拦截操作 请求数据进行拦截  拦截玩以后一定要return 出去
+        axios.interceptors.request.use(function(config) {
+                console.log(config)
+                return config
+            }),
+            function(error) {
+                return promise.reject(error); //对请求错误做些什么
+            }
+            //添加拦截操作 数据响应进行拦截  拦截玩以后一定要return 出去
+        axios.interceptors.response.use(function(response) {
+                console.log(response)
+                return response
+            }),
+            function(error) {
+                return promise.reject(error)
+            }
+
+        new Vue({
+            el: '#app',
+            data: {
+
+            },
+            methods: {
+                get_axios: function() {
+                    axios({
+                        method: 'get',
+                        url: "",
+                        params: {
+                            name: '三体'
+                        }
+                    }).then(res => {
+                        console.log(res.data)
+                    }).catch(req => {
+                        console.log(req)
+                    })
+                },
+                // get_axios: function() {
+                //     axios.get('http://127.0.0.1:4000', {
+                //         params: {
+                //             name: '三体'
+                //         }
+                //     }).then(res => {
+                //         console.log(res)
+                //     }).catch(req => {
+                //         console.log(req.data)
+                //     })
+                // },
+
+
+                // post_axios: function() {
+                //     axios({
+                //         method: 'post',
+                //         url: 'http://127.0.0.1:3001/user',
+                //         data: {
+                //             act: 'reg',
+                //             user: 'liujiayin',
+                //             pass: '123456'
+                //         }
+                //     }).then(res => {
+                //         console.log(res)
+                //     }).catch(error => {
+                //         console.log(error)
+                //     })
+                // }
+
+
+                post_axios: function() {
+                    myaxios.post('/user', Qs.stringify({
+                        act: 'reg',
+                        user: 'liujaiyin',
+                        pass: '123456'
+                    })).then(res => {
+                        console.log(res)
+                    }).catch(error => {
+                        console.log(error.data)
+                    })
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

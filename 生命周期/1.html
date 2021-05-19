@@ -1,0 +1,86 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-05-18 09:42:51
+ * @LastEditTime: 2021-05-18 11:36:06
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \项目\vscode\01-HTML\javascript 基础\HTML\基础练习\四月\Vue\axios\声明周期\1.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        {{msg}}
+        <input type="text" v-model='msg'>
+    </div>
+    <script src="../lib/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                msg: '测试声明周期'
+            },
+            methods: {
+                fn: function() {
+                    console.log('函数')
+                }
+            },
+            beforeCreate: function() {
+                console.log('********beforecreate********') //*组件实例刚被创建，只有一些声明周期函数和默认事件，data和methods中的数据还没有初始化【加一些loading事件】*
+                console.group(this.$el)
+                console.group(this.msg)
+                console.group(this.fn)
+            },
+            created: function() {
+                console.log('********created********') //**组件实例刚创建完成，属性已经绑定，当时DOM还未生成，$el属性还不存在【结束loading事件，还做一些初始化，实现函数自执行等】**
+                console.group(this.$el)
+                console.group(this.msg)
+                console.group(this.fn)
+            },
+            beforeMount: function() {
+                console.log('********beforeMount********') //此时数据在虚拟dom中el实例还没挂载
+                console.group(this.$el)
+                console.group(this.msg)
+                console.group(this.fn)
+            },
+            mounted: function() {
+                console.log('********mounted********') //此时el已经挂载 虚拟dom已经和页面保持一致
+                console.group(this.$el)
+                console.group(this.msg)
+                console.group(this.fn)
+            },
+            beforeUpdate: function() {
+                console.log('********beforeUpdate********')
+                console.group(this.$el)
+                console.group(this.msg)
+                console.group(this.fn)
+            },
+            updated: function() {
+                console.log('********updated********')
+                console.group(this.$el)
+                console.group(this.msg)
+                console.group(this.fn)
+            },
+            beforeDestroy: function() {
+                console.log('********beforeDestroy********')
+                console.group(this.$el)
+                console.group(this.msg)
+                console.group(this.fn)
+            },
+            destroyed: function() {
+                $destroyed()
+            }
+        })
+    </script>
+
+</body>
+
+</html>

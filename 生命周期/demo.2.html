@@ -1,0 +1,149 @@
+<!--
+ * @Author: your name
+ * @Date: 2021-05-18 16:54:07
+ * @LastEditTime: 2021-05-18 20:01:34
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \项目\vscode\01-HTML\javascript 基础\HTML\基础练习\四月\Vue\axios\生命周期\demo.2.html
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        
+        .box {
+            width: 1000px;
+            margin: 0 auto;
+            border: 1px solid #ccc;
+            padding: 10px 20px;
+        }
+        
+        .box ul {
+            list-style: none;
+            color: rgb(150, 147, 147);
+            font-size: 15px;
+            margin-top: 5px;
+            margin-bottom: 40px;
+        }
+        
+        .box ul li {
+            float: left;
+            margin-right: 20px;
+        }
+        
+        .box .content img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .box ol {
+            list-style: none;
+        }
+        
+        .box ol li {
+            border-bottom: 1px solid #ccc;
+            width: 100%
+        }
+        
+        .box ol li img {
+            width: 30px;
+            height: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="box">
+            <div v-if='loadding'>loadding.....</div>
+            <div v-else class="box2">
+                <h4>{{datas.title}}</h4>
+                <ul>
+                    <li>• 分类:{{zz}}</li>
+                    <li>• {{datas.visit_count}}次访问</li>
+                    <li>• 分布于:{{datas.create_at|format}}</li>
+                    <li>• 作者:{{datas.author.loginname}}</li>
+                </ul>
+                <div class="content" v-html="datas.content"></div>
+                <ol>
+                    <li v-for='(item,index) in datas.replies'>
+                        <img :src='item.author.avatar_url'>
+                        <span>{{item.author.loginname}}&nbsp; &nbsp;{{index+1}}楼</span>
+                        <p v-html='item.content'></p>
+                    </li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <script src="../lib/axios.min.js"></script>
+    <script src="../lib/vue.js"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                loadding: false,
+                datas: {},
+            },
+            methods: {
+                fn: function() {
+                    axios.get('https://cnodejs.org/api/v1/topic/5ae140407b0e8dc508cca7cc', {
+                        params: {
+                            mdrender: true
+                        }
+                    }).then(res => {
+                        this.datas = res.data.data
+                        this.loadding = false
+                    }).catch(req => {
+                        console.log(req)
+                    })
+                }
+            },
+            beforeMount: function() {
+                this.loadding = true
+                this.fn()
+            },
+            computed: {
+                zz() {
+                    var type = this.datas.tab
+                    if (type = 'ask') {
+                        return '回答'
+                    };
+                    if (type = 'share') {
+                        return '分享'
+                    };
+                    if (type = 'job') {
+                        return '招聘'
+                    };
+                    if (type = "good") {
+                        return '精华'
+                    }
+                }
+            },
+            filters: {
+                format: function(v) {
+                    var time = new Date(v)
+                    var p = ""
+                    var y = time.getFullYear()
+                    var m = (time.getMonth() + 1) < 10 ? '0' + (time.getMonth() + 1) : (time.getMonth() + 1)
+                    var d = time.getDate() < 10 ? '0' + time.getDate() : time.getDate()
+                    var h = time.getHours() < 10 ? "0" + time.getHours() : time.getHours()
+                    var f = time.getMinutes() < 10 ? '0' + time.getMinutes() : time.getMinutes()
+                    var s = time.getSeconds() < 10 ? '0' + time.getSeconds() : time.getSeconds()
+                    p = `${y}-${m}-${d}  ${h}:${f}:${s}`
+                    return p
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
